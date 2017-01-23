@@ -1,1 +1,1 @@
-web: gunicorn gettingstarted.wsgi --log-file -
+worker: python3 server.py https://boiling-caverns-15454.herokuapp.com/ $PORT
