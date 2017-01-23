@@ -7,7 +7,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 args = sys.argv
 
-server_address = (args[1], int(args[2]))
+server_address = (socket.gethostname(), int(args[2]))
 print('starting up on %s port %s' % server_address)
 sock.bind(server_address)
 # Listen for incoming connections
