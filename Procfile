@@ -1,1 +1,1 @@
-web: python3 server.py https://boiling-caverns-15454.herokuapp.com/ $PORT
+worker: python3 server.py $PORT
