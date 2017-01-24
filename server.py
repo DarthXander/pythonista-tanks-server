@@ -7,7 +7,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 args = sys.argv
 
-server_address = ("boiling-caverns-15454.herokuapp.com", int(args[1]))
+server_address = ("0.0.0.0", int(args[1]))
 print('starting up on %s port %s' % server_address)
 sock.bind(server_address)
 # Listen for incoming connections
