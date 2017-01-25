@@ -1,36 +1,25 @@
-import socket
+import asyncio
+import websockets
 import sys
 
-# Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Bind the socket to the port
+# coroutine for echo server
+async def echo(websocket, path):
+	print("connection with {!r}".format(path))
+    data = await websocket.recv() # recieve some bytes
+    print("received {!s} data: {!r}".format(len(data), data))
 
+    # send them back!
+    await websocket.send(data)
+    print("sent back")
+
+# get port environment variable from command line arguments
 args = sys.argv
+port = args[1]
 
-server_address = ("0.0.0.0", int(args[1]))
-print('starting up on %s port %s' % server_address)
-sock.bind(server_address)
-# Listen for incoming connections
-sock.listen(1)
+# start the async server
+server = websockets.serve(echo, '0.0.0.0', port)
 
-while True:
-    # Wait for a connection
-    print('waiting for a connection')
-    connection, client_address = sock.accept()
-    try:
-        print('connection from', client_address)
-
-        # Receive the data in small chunks and retransmit it
-        while True:
-            data = connection.recv(16)
-            print('received "%s"' % data)
-            if data:
-                print('sending data back to the client')
-                connection.sendall(data)
-            else:
-                print('no more data from', client_address)
-                break
-            
-    finally:
-        # Clean up the connection
-        connection.close()
+# get event loop
+loop = asyncio.get_event_loop()
+loop.run_until_complete(server)
+loop.run_forever()
