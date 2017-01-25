@@ -19,7 +19,7 @@ address = ('0.0.0.0', port)
 
 # start the async server
 server = websockets.serve(echo, address[0], address[1])
-
+print("waiting for a connection")
 # get event loop
 loop = asyncio.get_event_loop()
 loop.run_until_complete(server)

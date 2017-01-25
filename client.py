@@ -9,7 +9,7 @@ async def call():
 		print("sent")
 
 		echo = await websocket.recv()
-		print("recieved message: {!r}")
+		print("recieved message: {!r}".format(echo))
 
 address = "ws://boiling-caverns-15454.herokuapp.com:80"
 
