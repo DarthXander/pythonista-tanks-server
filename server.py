@@ -4,7 +4,7 @@ import sys
 
 # coroutine for echo server
 async def echo(websocket, path):
-	print("connection with {!r}".format(path))
+	print("connection with {!r}".format(websocket.remote_address))
 	data = await websocket.recv() # recieve some bytes
 	print("received {!s} data: {!r}".format(len(data), data))
 	
