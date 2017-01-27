@@ -2,12 +2,25 @@ import asyncio
 import websockets
 import sys
 
+# communications of the form:
+# | connection id | type     | data
+# | (2 bytes)     | one byte | ....
+
+connections = []
+data = {}
+
 # coroutine for echo server
 async def echo(websocket, path):
 	print("connection with {!r}".format(websocket.remote_address))
 	data = await websocket.recv() # recieve some bytes
 	print("received {!s} data: {!r}".format(len(data), data))
-	
+	idnum = data[0:2]
+	messagetype = data[2]
+	if route:
+		route_to = data[2:4]
+
+
+
 	await websocket.send(data) # send them back!
 	print("sent back")
 
