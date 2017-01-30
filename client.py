@@ -1,10 +1,11 @@
 import asyncio
 import websockets
 
+message = bytes()
+
 async def call():
 	async with websockets.connect(address) as websocket:
 		print("connection made with {}".format(address))
-		message = input("send message: ")
 		await websocket.send(message)
 		print("sent")
 
