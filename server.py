@@ -87,7 +87,7 @@ async def tank_coro(websocket, path):
 	if messagetype == new_connection:
 		global id_inc, players
 		print("establishing new connection, sending id number ({}) to confirm".format(id_inc))
-		await websocket.send(bytes([id_inc]))
+		await websocket.send(encnum(id_inc))
 		connections.append(id_inc)
 		print("confirmed. {!s} connections total".format(len(connections)))
 		print("creating player info for {}".format(id_inc))
@@ -105,8 +105,9 @@ async def tank_coro(websocket, path):
 				print("{}: {!r}".format(attr, data))
 				setattr(players[idnum], attr, data)
 		elif messagetype in get_simplifier:
-			print("recieved request for all tank info from {}".format(idnum))
-			tosend = encode(get_info(get_simplifier[messagetype]))
+			infotype = get_simplifier[messagetype]
+			print("recieved request for {} tank info from {}".format(infotype, idnum))
+			tosend = encode(get_info(infotype))
 			print("sending...")
 			await websocket.send(tosend)
 			print("sent")
