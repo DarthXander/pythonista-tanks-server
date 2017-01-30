@@ -85,6 +85,7 @@ async def tank_coro(websocket, path):
 	messagetype = data[2]
 	message = data[3:]
 	if messagetype == new_connection:
+		global id_inc, players
 		print("establishing new connection, sending id number ({}) to confirm".format(id_inc))
 		await websocket.send(bytes([id_inc]))
 		connections.append(id_inc)
