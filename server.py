@@ -47,7 +47,7 @@ class PlayerInfo (object):
 			result[attrib] = getattr(self, attrib)
 		return result
 	def get_all(self):
-		return {**get_setup(), **get_update()}
+		return {**self.get_setup(), **self.get_update()}
 
 def get_info(kind):
 	valid = ["setup", "update", "all"]
