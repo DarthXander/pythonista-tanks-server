@@ -34,7 +34,7 @@ class PlayerInfo (object):
 	update = ["position", "arm_angle"]
 
 	def __init__(self, **kwargs):
-		for name, arg in kwargs:
+		for name, arg in kwargs.items():
 			setattr(self, name, arg)
 	def get_setup(self):
 		result = {}
@@ -55,7 +55,7 @@ def get_info(kind):
 		raise ValueError("can only get data types in {!r}".format(valid))
 	method_name = "get_" + kind
 	result = {}
-	for idnum, player in players:
+	for idnum, player in players.items():
 		info_dict = getattr(player, method_name)()
 		result[idnum] = info_dict
 	return result
@@ -101,7 +101,7 @@ async def tank_coro(websocket, path):
 			print("recieved information about {!s}...".format(idnum))
 			info = decode(message)
 			print("message type: {!r}".format(type(info)))
-			for attr, data in info:
+			for attr, data in info.items():
 				print("{}: {!r}".format(attr, data))
 				setattr(players[idnum], attr, data)
 		elif messagetype in get_simplifier:
