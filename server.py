@@ -87,17 +87,19 @@ async def tank_coro(websocket, path):
 	if messagetype == new_connection:
 		print("establishing new connection, sending id number ({}) to confirm".format(id_inc))
 		await websocket.send(bytes([id_inc]))
-		connections.append(idnum)
+		connections.append(id_inc)
 		print("confirmed. {!s} connections total".format(len(connections)))
-		print("creating player info for {}".format(idnum))
-		players[idnum] = PlayerInfo()
+		print("creating player info for {}".format(id_inc))
+		players[id_inc] = PlayerInfo()
+		id_inc += 1
 	else:
 		if idnum not in connections:
 			print("received info from {}; connection wasn't established".format(idnum))
 			raise ValueError("invalid connection")
 		if messagetype == send_info:
-			print("getting information about {!s}...".format(idnum))
+			print("recieved information about {!s}...".format(idnum))
 			info = decode(message)
+			print("message type: {!r}".format(type(info)))
 			for attr, data in info:
 				print("{}: {!r}".format(attr, data))
 				setattr(players[idnum], attr, data)
