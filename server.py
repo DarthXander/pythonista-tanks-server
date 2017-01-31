@@ -119,7 +119,7 @@ async def tank_coro(websocket, path):
 			await websocket.send(tosend)
 			print("sent")
 		elif messagetype == disconnect:
-			print("{} is disconnecting...")
+			print("{!s} is disconnecting...".format(idnum))
 			del players[idnum]
 			connections.remove(idnum)
 			print("done")
