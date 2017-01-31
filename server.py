@@ -109,7 +109,7 @@ async def tank_coro(websocket, path):
 			info = decode(message)
 			#print("message type: {!r}".format(type(info)))
 			for attr, data in info.items():
-				print("{}: {!r}".format(attr, data))
+				#print("{}: {!r}".format(attr, data))
 				setattr(players[idnum], attr, data)
 		elif messagetype in get_simplifier:
 			infotype = get_simplifier[messagetype]
