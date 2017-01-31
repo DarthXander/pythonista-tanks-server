@@ -81,7 +81,7 @@ async def tank_coro(websocket, path):
 	data = await websocket.recv() # recieve some bytes
 	print("received {!s} data: {!r}".format(len(data), data))
 	if len(data) == 1:
-		messagetype = data
+		messagetype = data[0]
 	elif len(data) == 3:
 		idnum = decnum(data[0:2])
 		messagetype = data[2]
