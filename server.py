@@ -61,6 +61,7 @@ def get_info(kind):
 	return result
 
 new_connection = 0x0
+disconnect = 0x5
 
 send_info = 0x1
 
@@ -79,11 +80,17 @@ async def tank_coro(websocket, path):
 	print("connection with {!r}".format(websocket.remote_address))
 	data = await websocket.recv() # recieve some bytes
 	print("received {!s} data: {!r}".format(len(data), data))
-	if len(data) < 3:
-		raise AssertionError()
-	idnum = decnum(data[0:2])
-	messagetype = data[2]
-	message = data[3:]
+	if len(data) == 1:
+		messagetype = data
+	elif len(data) == 3:
+		idnum = decnum(data[0:2])
+		messagetype = data[2]
+	elif len(data) > 3:
+		idnum = decnum(data[0:2])
+		messagetype = data[2]
+		message = data[3:]
+	else:
+		raise ValueError("invalid number of bytes")
 	if messagetype == new_connection:
 		global id_inc, players
 		print("establishing new connection, sending id number ({}) to confirm".format(id_inc))
@@ -111,6 +118,12 @@ async def tank_coro(websocket, path):
 			print("sending...")
 			await websocket.send(tosend)
 			print("sent")
+		elif messagetype == disconnect:
+			print("{} is disconnecting...")
+			del players[idnum]
+			connections.remove(idnum)
+			print("done")
+
 			
 
 
