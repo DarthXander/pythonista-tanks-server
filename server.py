@@ -77,9 +77,9 @@ id_inc = 0
 
 # coroutine for echo server
 async def tank_coro(websocket, path):
-	print("connection with {!r}".format(websocket.remote_address))
+	#print("connection with {!r}".format(websocket.remote_address))
 	data = await websocket.recv() # recieve some bytes
-	print("received {!s} data: {!r}".format(len(data), data))
+	#print("received {!s} data: {!r}".format(len(data), data))
 	if len(data) == 1:
 		messagetype = data[0]
 	elif len(data) == 3:
@@ -102,22 +102,22 @@ async def tank_coro(websocket, path):
 		id_inc += 1
 	else:
 		if idnum not in connections:
-			print("received info from {}; connection wasn't established".format(idnum))
+			#print("received info from {}; connection wasn't established".format(idnum))
 			raise ValueError("invalid connection")
 		if messagetype == send_info:
-			print("recieved information about {!s}...".format(idnum))
+			#print("recieved information about {!s}...".format(idnum))
 			info = decode(message)
-			print("message type: {!r}".format(type(info)))
+			#print("message type: {!r}".format(type(info)))
 			for attr, data in info.items():
 				print("{}: {!r}".format(attr, data))
 				setattr(players[idnum], attr, data)
 		elif messagetype in get_simplifier:
 			infotype = get_simplifier[messagetype]
-			print("recieved request for {} tank info from {}".format(infotype, idnum))
+			#print("recieved request for {} tank info from {}".format(infotype, idnum))
 			tosend = encode(get_info(infotype))
-			print("sending...")
+			#print("sending...")
 			await websocket.send(tosend)
-			print("sent")
+			#print("sent")
 		elif messagetype == disconnect:
 			print("{!s} is disconnecting...".format(idnum))
 			del players[idnum]
