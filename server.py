@@ -5,6 +5,8 @@ import pickle
 import struct
 from io import BytesIO
 
+# todo: make it friggin faster
+
 # communications of the form:
 # | connection id | type     | data
 # | (2 bytes)     | one byte | ....
