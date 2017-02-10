@@ -7,7 +7,7 @@ from io import BytesIO
 
 # todo: make it friggin faster
 
-# communications of the form:
+# communications of the form: 
 # | connection id | type     | data
 # | (2 bytes)     | one byte | ....
 
@@ -80,51 +80,57 @@ id_inc = 0
 # coroutine for echo server
 async def tank_coro(websocket, path):
 	#print("connection with {!r}".format(websocket.remote_address))
-	data = await websocket.recv() # recieve some bytes
-	#print("received {!s} data: {!r}".format(len(data), data))
-	if len(data) == 1:
-		messagetype = data[0]
-	elif len(data) == 3:
-		idnum = decnum(data[0:2])
-		messagetype = data[2]
-	elif len(data) > 3:
-		idnum = decnum(data[0:2])
-		messagetype = data[2]
-		message = data[3:]
-	else:
-		raise ValueError("invalid number of bytes")
-	if messagetype == new_connection:
-		global id_inc, players
-		print("establishing new connection, sending id number ({}) to confirm".format(id_inc))
-		await websocket.send(encnum(id_inc))
-		connections.append(id_inc)
-		print("confirmed. {!s} connections total".format(len(connections)))
-		print("creating player info for {}".format(id_inc))
-		players[id_inc] = PlayerInfo()
-		id_inc += 1
-	else:
-		if idnum not in connections:
-			#print("received info from {}; connection wasn't established".format(idnum))
-			raise ValueError("invalid connection")
-		if messagetype == send_info:
-			#print("recieved information about {!s}...".format(idnum))
-			info = decode(message)
-			#print("message type: {!r}".format(type(info)))
-			for attr, data in info.items():
-				#print("{}: {!r}".format(attr, data))
-				setattr(players[idnum], attr, data)
-		elif messagetype in get_simplifier:
-			infotype = get_simplifier[messagetype]
-			#print("recieved request for {} tank info from {}".format(infotype, idnum))
-			tosend = encode(get_info(infotype))
-			#print("sending...")
-			await websocket.send(tosend)
-			#print("sent")
-		elif messagetype == disconnect:
-			print("{!s} is disconnecting...".format(idnum))
-			del players[idnum]
-			connections.remove(idnum)
-			print("done")
+	try:
+		while True:
+			data = await websocket.recv() # recieve some bytes
+			#print("received {!s} data: {!r}".format(len(data), data))
+			if len(data) == 1:
+				messagetype = data[0]
+			elif len(data) == 3:
+				idnum = decnum(data[0:2])
+				messagetype = data[2]
+			elif len(data) > 3:
+				idnum = decnum(data[0:2])
+				messagetype = data[2]
+				message = data[3:]
+			else:
+				raise ValueError("invalid number of bytes")
+			if messagetype == new_connection:
+				global id_inc, players
+				print("establishing new connection, sending id number ({}) to confirm".format(id_inc))
+				await websocket.send(encnum(id_inc))
+				connections.append(id_inc)
+				print("confirmed. {!s} connections total".format(len(connections)))
+				print("creating player info for {}".format(id_inc))
+				players[id_inc] = PlayerInfo()
+				id_inc += 1
+			else:
+				if idnum not in connections:
+					#print("received info from {}; connection wasn't established".format(idnum))
+					raise ValueError("invalid connection")
+				if messagetype == send_info:
+					#print("recieved information about {!s}...".format(idnum))
+					info = decode(message)
+					#print("message type: {!r}".format(type(info)))
+					for attr, data in info.items():
+						#print("{}: {!r}".format(attr, data))
+						setattr(players[idnum], attr, data)
+				elif messagetype in get_simplifier:
+					infotype = get_simplifier[messagetype]
+					#print("recieved request for {} tank info from {}".format(infotype, idnum))
+					tosend = encode(get_info(infotype))
+					#print("sending...")
+					await websocket.send(tosend)
+					#print("sent")
+				elif messagetype == disconnect:
+					print("{!s} is disconnecting...".format(idnum))
+					del players[idnum]
+					connections.remove(idnum)
+					print("done")
+					break
+	except websockets.exceptions.ConnectionClosed as conn_closed:
+		print("connection closed unexpectedly: \n{!r}".format(conn_closed))
+
 
 			
 
